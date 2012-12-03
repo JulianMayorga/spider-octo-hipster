@@ -9,13 +9,13 @@ struct item_list {
   struct list_head list;
 };
 
-void *print_items(void *args) {
+void *queue_read(void *args) {
   struct item_list *thread_list = (struct item_list *) args;
   struct item_list *list_ptr;
 
-  list_for_each_entry(list_ptr, &thread_list->list, list) {
-    printf("Item: %d\n", list_ptr->item);
-  }
+  list_ptr = list_entry(&thread_list->list, struct item_list, list);
+  printf("Item: %d\n", list_ptr->item);
+  list_del(&thread_list->list);
   printf("\n");
 
   return NULL;
@@ -27,6 +27,7 @@ int main() {
 
   unsigned int i;
   int return_value;
+  pthread_t thread;
 
   INIT_LIST_HEAD(&my_list.list);
 
@@ -36,12 +37,18 @@ int main() {
     list_add(&(list_ptr->list), &(my_list.list));
   }
 
-  pthread_t thread;
-  return_value = thread_create(&thread, print_items, (void*) &my_list);
-  if (return_value != 0) {
-    perror("Guau!");
+  for (i = 1; i<=10; i++) {
+  list_ptr = list_entry(my_list.list.next, struct item_list, list);
+  printf("Item: %d\n", list_ptr->item);
+  list_del(&list_ptr->list);
+  printf("\n");
+  /*  return_value = thread_create(&thread, queue_read, (void*) &my_list);
+    if (return_value != 0) {
+      perror("Guau!");
+    }
+    */
   }
-  pthread_join(thread, NULL);
+  //pthread_join(thread, NULL);
 
   return 0;
 }
