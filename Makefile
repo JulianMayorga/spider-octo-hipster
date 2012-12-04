@@ -1,11 +1,11 @@
 CC = gcc
 CFLAGS = -Wall -pthread -g -ggdb
-NOMBRE = araña
-TARGETS = araña
+NOMBRE = spider
+TARGETS = spider
 
 all: $(TARGETS)
 
-araña: main.o thread.o
+spider: main.o thpool.o
 	$(CC) $(CFLAGS) $(STANDARD) -o $@ $^ $(LDLIBS)
 
 clean:

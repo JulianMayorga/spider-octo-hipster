@@ -1,23 +1,35 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
 
-#include "thread.h"
+#include "thpool.h"
 
-void * get(void *args) {
-printf("GET http://nave.com\n");
-return NULL;
+/* Some arbitrary task 1 */
+void task1(){
+  printf("# Thread working: %u\n", (int)pthread_self());
+  printf("  Task 1 running..\n");
 }
 
-int main() {
-int return_value;
-pthread_t thread;
-return_value = thread_create(&thread, get, NULL);
-if (return_value != 0) {
-perror("Guau!");
+/* Some arbitrary task 2 */
+void task2(int a){
+  printf("# Thread working: %u\n", (int)pthread_self());
+  printf("  Task 2 running..\n");
+  printf("%d\n", a);
 }
-pthread_join(thread, NULL);
 
-return 0;
+int main(){
+  int i;
 
+  thpool_t* threadpool;             /* make a new thread pool structure     */
+  threadpool=thpool_init(4);        /* initialise it to 4 number of threads */
+
+  puts("Adding 20 tasks to threadpool");
+  int a=54;
+  for (i=0; i<10; i++){
+    thpool_add_work(threadpool, (void*)task1, NULL);
+    thpool_add_work(threadpool, (void*)task2, (void*)a);
+  };
+
+  puts("Will kill threadpool");
+  thpool_destroy(threadpool);
+
+  return 0;
 }
