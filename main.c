@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include "net.h"
+#include "file.h"
 #include "thpool.h"
 
 pthread_mutex_t work_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -13,44 +14,43 @@ struct work_args {
   pthread_mutex_t* mutex;
 };
 
-/* Some arbitrary task 1 */
-void task1(){
-  printf("# Thread working: %u\n", (int)pthread_self());
-  printf("  Task 1 running..\n");
-}
-
-/* Some arbitrary task 2 */
-void task2(int a){
-  printf("# Thread working: %u\n", (int)pthread_self());
-  printf("  Task 2 running..\n");
-  printf("%d\n", a);
-}
-
 void crawl(struct work_args *args) {
-  net_fetch(args->host, "/");
+  char* buffer = NULL;
+
+  //fetch url
+  buffer = net_fetch(args->host, "/");
+  //save file to disk
+  if ( -1 == file_save(buffer, "google") ) {
+    perror("file_save");
+  }
   pthread_mutex_lock(args->mutex);
   args->done_work++;
   pthread_mutex_unlock(args->mutex);
-  /*
-   * file_save(content)
-   */
 }
 
 int main(){
   int i;
   char* host = "www.google.com";
+  char* buffer;
 
-  struct work_args* args;
+  buffer = net_fetch(host, "/");
+  //save file to disk
+  if ( -1 == file_save(buffer, "index.html") ) {
+    perror("file_save");
+  }
+
+ /* struct work_args* args;
   
   args= (struct work_args*)malloc(sizeof(struct work_args)); 
 
   args->mutex = &work_mutex;
   args->done_work = 0;
   args->host = host;
+  */
 
-  thpool_t* threadpool;             /* make a new thread pool structure     */
-  threadpool=thpool_init(2);        /* initialise it to 4 number of threads */
-
+//  thpool_t* threadpool;             /* make a new thread pool structure     */
+//  threadpool=thpool_init(2);        /* initialise it to 4 number of threads */
+/*
   for (i=0; i<10; i++){
     thpool_add_work(threadpool, (void*)crawl, (void*)args);
   };
@@ -62,6 +62,7 @@ int main(){
   }
 
   thpool_destroy(threadpool);
+  */
 
   return 0;
 }

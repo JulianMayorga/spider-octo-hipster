@@ -24,17 +24,21 @@
 
 //implicit declarations
 int connect_inet_socket(char* host, int* socket_fd);
+char* html_get_start(char* buffer);
 
 /* Fetch url */
-void net_fetch(char* host, char* url) {
-  int socket_fd, rwerr = 1;
+char* net_fetch(char* host, char* url) {
+  int socket_fd, rwerr = 1, size = 0;
   char* request, buf[16];
+  char* content = NULL;
+  char* tmp;
   //connect to inet socket
   if ( 0 != connect_inet_socket(host, &socket_fd) ) {
     perror("connect inet socket");
   }
   //now we have an established connection
   //initialize with zeros the GET request
+  //TODO replace ugly 53 with a constant
   request = calloc(53+strlen(host)+strlen(url),1);
 
   sprintf(request, "GET %s HTTP/1.1\nHost: %s\nUser-agent: simple-http client\n\n", url, host);
@@ -50,19 +54,29 @@ void net_fetch(char* host, char* url) {
   {
     //read the socket
     rwerr = read(socket_fd, buf, 16);
-    if ( 0 > rwerr ) {
-      perror("read");
+    if (rwerr > 0 ) {
+      //add "read" number of bytes to result integer
+      size += rwerr;
+      tmp = (char*)realloc(content, size);
+      if ( tmp != NULL ) {
+        content = tmp;
+        //concatenate read bytes to content buffer
+        memcpy(content + size - rwerr, buf, rwerr);
+      } else {
+        free(content);
+        perror("realloc");
+      }
     }
-    //write to buffer
-    if ( 0 > write(1, buf, rwerr) ) {
+    /*if ( 0 > write(1, buf, rwerr) ) {
       perror("write");
+      content = NULL;
     }
+    */
   }
-  printf("Hilo %d, socket %d.\n", (int)pthread_self(), socket_fd);
 
   close(socket_fd);
-  //TODO:return buffer
-  //return NULL;
+  content = html_get_start(content);
+  return content;
 }
 
 /* Connect to socket */
@@ -104,4 +118,24 @@ int connect_inet_socket(char* host, int* socket_fd) {
   }
 
   return to_return;
+}
+
+/* Remove HTTP header from a buffer */
+char* html_get_start(char* buffer) {
+  static char * end_of_header =  "\r\n\r\n";
+  char *html_start = NULL;
+  char* htmlcontent;
+
+  //Detect the beginning of html content
+  htmlcontent = strstr(buffer, end_of_header);
+  if ( htmlcontent != NULL ) {
+    //remove end_of_header
+    htmlcontent += sizeof(end_of_header);
+    //set html_start at html_content
+    html_start = htmlcontent;
+  } else {
+    html_start = NULL;
+  }
+
+  return html_start;
 }

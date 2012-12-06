@@ -20,9 +20,9 @@
  *
  * @param   host
  * @param   url to be fetched
- * @return  page content on success,
+ * @return  buffer with url content,
  *          NULL on error
  */
-void net_fetch(char* host, char* url);
+char* net_fetch(char* host, char* url);
 
 #endif

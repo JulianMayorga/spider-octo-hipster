@@ -1,4 +1,6 @@
 /*
+ * @file    file.h
+ *
  * @author  Marcelo Romagnoli
  * @author  Julian Mayorga
  */
@@ -14,12 +16,13 @@
 /* FUNCTIONS */
 
 /*
- * @brief   Save buffer on disk
+ * @brief   Save buffer to a file on disk
  *
- * @param 
+ * @param   buffer to save
+ * @param   name of the new file
  * @return  0 on success,
  *         -1 on error
  */
-int file_save(char* buffer);
+int file_save(char* buffer, char* name);
 
 #endif
