@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/stat.h>
 
 #include "net.h"
 #include "file.h"
@@ -21,24 +20,12 @@ struct work_args {
 
 void crawl(struct work_args *args) {
   char* buffer = NULL;
-  char* fullpath = NULL;
-  static char* sites_dir = "sites/";
 
-  fullpath = (char*)calloc(strlen(sites_dir) + strlen(args->host) + strlen(args->url) + 1, 1);
   //fetch url
   buffer = net_fetch(args->host, args->url);
   pthread_mutex_lock(args->mutex);
-  //create host dir
-  strncat(fullpath, sites_dir, strlen(sites_dir));
-  strncat(fullpath, args->host, strlen(args->host));
-  if ( -1 == mkdir(fullpath, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) ) {
-    perror("mkdir");
-    exit(1);
-  }
-  //form file path
-  strncat(fullpath, args->url, strlen(args->url));
-  //save file to disk
-  if ( -1 == file_save(buffer, fullpath) ) {
+   //save file to disk
+  if ( -1 == file_save(buffer, args->host, args->url) ) {
     perror("file_save");
     exit(1);
   }

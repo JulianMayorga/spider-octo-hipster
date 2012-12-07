@@ -19,10 +19,11 @@
  * @brief   Save buffer to a file on disk
  *
  * @param   buffer to save
- * @param   name of the new file
+ * @param   dir to save the file
+ * @param   filename of the new file
  * @return  0 on success,
  *         -1 on error
  */
-int file_save(char* buffer, char* name);
+int file_save(char* buffer, char* dir, char* filename);
 
 #endif
