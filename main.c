@@ -6,6 +6,8 @@
 #include "file.h"
 #include "thpool.h"
 
+#define WORK_TOTAL 1
+
 pthread_mutex_t work_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 struct work_args {
@@ -20,7 +22,7 @@ void crawl(struct work_args *args) {
   //fetch url
   buffer = net_fetch(args->host, "/");
   //save file to disk
-  if ( -1 == file_save(buffer, "google") ) {
+  if ( -1 == file_save(buffer, "sites/google") ) {
     perror("file_save");
   }
   pthread_mutex_lock(args->mutex);
@@ -31,38 +33,29 @@ void crawl(struct work_args *args) {
 int main(){
   int i;
   char* host = "www.google.com";
-  char* buffer;
 
-  buffer = net_fetch(host, "/");
-  //save file to disk
-  if ( -1 == file_save(buffer, "index.html") ) {
-    perror("file_save");
-  }
+  struct work_args* args;
 
- /* struct work_args* args;
-  
   args= (struct work_args*)malloc(sizeof(struct work_args)); 
 
   args->mutex = &work_mutex;
   args->done_work = 0;
   args->host = host;
-  */
 
-//  thpool_t* threadpool;             /* make a new thread pool structure     */
-//  threadpool=thpool_init(2);        /* initialise it to 4 number of threads */
-/*
-  for (i=0; i<10; i++){
+
+  thpool_t* threadpool;             /* make a new thread pool structure     */
+  threadpool=thpool_init(2);        /* initialise it to x number of threads */
+
+  for (i=0; i<WORK_TOTAL; i++){
     thpool_add_work(threadpool, (void*)crawl, (void*)args);
   };
 
-  puts("Will kill threadpool");
- 
-  while (10 > args->done_work) {
+  while (WORK_TOTAL > args->done_work) {
     sleep(1);
   }
 
   thpool_destroy(threadpool);
-  */
+
 
   return 0;
 }

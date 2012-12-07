@@ -70,8 +70,8 @@ char* net_fetch(char* host, char* url) {
     /*if ( 0 > write(1, buf, rwerr) ) {
       perror("write");
       content = NULL;
-    }
-    */
+      }
+      */
   }
 
   close(socket_fd);
