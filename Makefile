@@ -9,5 +9,5 @@ spider: main.o thpool.o net.o file.o
 	$(CC) $(CFLAGS) $(STANDARD) -o $@ $^ $(LDLIBS)
 
 clean:
-	rm -fv $(TARGETS) *.o *~
+	rm -fvrf $(TARGETS) *.o *~ sites/*
 
