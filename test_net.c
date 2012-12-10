@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "minunit.h"
 #include "net.h"
@@ -12,7 +13,7 @@ char* http_response_without_header = "<HTML><HEAD><meta http-equiv='content-type
 static char* test_html_get_start() {
   char* buffer = NULL;
   buffer = html_get_start(http_response);
-  mu_assert("net.c error, html_get_start didn function properly", buffer != http_response_without_header);
+  mu_assert("net.c error, html_get_start didn't function properly", strcmp(buffer, http_response_without_header) == 0);
   return 0;
 }
 
