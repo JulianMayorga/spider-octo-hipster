@@ -24,5 +24,6 @@
  *          NULL on error
  */
 char* net_fetch(char* host, char* url);
+char* html_get_start(char* buffer);
 
 #endif
