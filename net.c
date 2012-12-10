@@ -24,7 +24,6 @@
 
 //implicit declarations
 int connect_inet_socket(char* host, int* socket_fd);
-char* html_get_start(char* buffer);
 
 /* Fetch url */
 char* net_fetch(char* host, char* url) {

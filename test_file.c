@@ -18,7 +18,7 @@ void tear_down() {
 
 static char* test_file_save() {
   char *content = "This is a test file";
-  mu_assert("error, couldn't create and save the file", file_save(content, dir, filename) != -1);
+  mu_assert("file.c error, couldn't create and save the file", file_save(content, dir, filename) != -1);
   return 0;
 }
 
