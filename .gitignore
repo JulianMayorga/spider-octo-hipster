@@ -1,2 +1,6 @@
 *.swp
+*.o
 sites/*
+spider
+test_file
+test_net
