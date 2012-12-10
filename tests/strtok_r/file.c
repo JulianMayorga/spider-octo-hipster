@@ -34,6 +34,7 @@ int file_save(char* buffer, char* dir, char* filename) {
   dirpath = _file_dirpath(dir);
   if ( -1 == mkdir(dirpath, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) ) {
     perror("mkdir");
+    fd = -1;
   }
 
   fullpath = _file_fullpath(dirpath, filename);
@@ -60,9 +61,8 @@ char* file_to_buffer(const char* filename) {
   long pos = ftell(f);
   fseek(f, 0, SEEK_SET);
 
-  char* bytes = calloc(pos, 1);
-  //read pos bytes - EOF
-  fread(bytes, pos -1, 1, f);
+  char* bytes = malloc(pos);
+  fread(bytes, pos, 1, f);
   fclose(f);
 
   //TODO when do we free memory of "bytes"

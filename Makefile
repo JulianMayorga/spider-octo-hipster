@@ -5,7 +5,7 @@ TARGETS = spider
 
 all: $(TARGETS)
 
-spider: main.o thpool.o net.o file.o
+spider: main.o thpool.o net.o file.o url_frontier.o
 	$(CC) $(CFLAGS) $(STANDARD) -o $@ $^ $(LDLIBS)
 
 clean:
