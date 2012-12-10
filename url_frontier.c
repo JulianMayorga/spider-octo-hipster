@@ -29,8 +29,6 @@ int url_frontier_parse(char* filename, struct url_list* url_list) {
 
   url_buffer = file_to_buffer(filename);
 
-  printf("url_buffer:%s\n", url_buffer);
-
   for (j = 1, str1 = url_buffer; ; j++, str1 = NULL) {
     token = strtok_r(str1, ";", &saveptr1);
     if (token == NULL)
