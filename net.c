@@ -80,7 +80,7 @@ char* net_fetch(char* host, char* url) {
 
 /* Connect to socket */
 int connect_inet_socket(char* host, int* socket_fd) {
-  struct addrinfo *result, hints;
+  struct addrinfo *result, hints, *p;
   char port[6];
   int to_return = 0;
 
@@ -92,8 +92,8 @@ int connect_inet_socket(char* host, int* socket_fd) {
   //fill hints structure with zeros
   memset(&hints, 0, sizeof(struct addrinfo));
 
-  //set INET address family (IPv4)
-  hints.ai_family = AF_INET;
+  //set INET address to unspecified (IPv4 or IPv6)
+  hints.ai_family = AF_UNSPEC;
   //set socket type to SOCK_STREAM (TCP/IP)
   hints.ai_socktype = SOCK_STREAM;
 
