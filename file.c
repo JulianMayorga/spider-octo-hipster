@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <sys/types.h>
 
 #include "file.h"
 
@@ -55,18 +57,25 @@ int file_save(char* buffer, char* dir, char* filename) {
 }
 
 char* file_to_buffer(const char* filename) {
-  FILE *f = fopen(filename, "r");
-  fseek(f, 0, SEEK_END);
-  long pos = ftell(f);
-  fseek(f, 0, SEEK_SET);
+  char *buffer;
+  struct stat file_info;
+  int fd;
 
-  char* bytes = calloc(pos, 1);
-  //read pos bytes - EOF
-  fread(bytes, pos -1, 1, f);
-  fclose(f);
+  if (0 > (fd = open(filename, O_RDONLY))) {
+    perror("open");
+    buffer = NULL;
+  } else {
+    fstat(fd, &file_info);
+    //read whole file - EOF
+    buffer = (char*)calloc(file_info.st_size, 1);
+    if (-1 == read(fd, buffer, file_info.st_size - 1) ) {
+      perror("read");
+      buffer = NULL;
+    }
+  }
 
-  //TODO when do we free memory of "bytes"
-  return bytes;
+  close(fd);
+  return buffer;
 }
 
 char* _file_dirpath(char* dir) {
