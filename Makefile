@@ -5,7 +5,7 @@ TARGETS = spider test_file test_net
 
 all: $(TARGETS)
 
-spider: main.o thpool.o net.o file.o url_frontier.o
+spider: main.o thpool.o net.o file.o url_frontier.o monitor.o
 	$(CC) $(CFLAGS) $(STANDARD) -o $@ $^ $(LDLIBS)
 
 test_file: test_file.o file.o

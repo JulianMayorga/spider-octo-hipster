@@ -41,12 +41,12 @@ int url_frontier_parse(char* filename, struct url_list* url_list) {
 
     //asigna a host
     url_list_ptr->host = subtoken;
-    printf(" --> %s\n", subtoken);
+    //printf(" --> %s\n", subtoken);
 
     subtoken = strtok_r(NULL, ",", &saveptr2);
     //asigna a url
     url_list_ptr->url = subtoken;
-    printf(" --> %s\n", subtoken);
+    //printf(" --> %s\n", subtoken);
     list_add(&(url_list_ptr->list), &url_list->list);
     number_of_entries++;
   }

@@ -80,7 +80,7 @@ char* net_fetch(char* host, char* url) {
 
 /* Connect to socket */
 int connect_inet_socket(char* host, int* socket_fd) {
-  struct addrinfo *result, hints, *p;
+  struct addrinfo *result, hints;
   char port[6];
   int to_return = 0;
 
