@@ -11,6 +11,7 @@
 #include "thpool.h"
 #include "url_frontier.h"
 #include "monitor.h"
+#include "utils.h"
 
 #define THREADS_MAX 512
 
@@ -60,7 +61,7 @@ void crawl(struct url_list *url_list) {
   }
 }
 
-int main() {
+int main(int argc, char **argv) {
 
   int msqid = monitor_create();
 
@@ -80,14 +81,30 @@ int main() {
     int i;
     int number_of_entries = 0;
     struct url_list url_list;
+	char filename[512];
+	
+	// Initialize filename with all zeros	
+	bzero(filename, sizeof(filename));
+	
+	// Manage arguments
+	utils_manage_args(argc, argv, &number_of_entries, filename);
     
-    INIT_LIST_HEAD(&url_list.list);
+	INIT_LIST_HEAD(&url_list.list);
 
     url_list.mutex = &work_mutex;
 
     url_list.msqid = msqid;
+	
+	if (strcmp(filename, "") == 0) {
+		snprintf(filename, sizeof(filename), "url_frontier"); // Set default
+	}	
 
-    number_of_entries = url_frontier_parse("url_frontier", &url_list);
+	// Set how many entries from file gonna read
+	if (number_of_entries == 0) {
+    	number_of_entries = url_frontier_parse(filename, &url_list);
+	} else {
+ 		url_frontier_parse(filename, &url_list);
+	}
 
     if (number_of_entries > THREADS_MAX) {
       number_of_entries = THREADS_MAX;
