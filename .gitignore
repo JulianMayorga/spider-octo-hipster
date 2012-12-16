@@ -1,6 +1,10 @@
+# Ignore
 *.swp
 *.o
 sites/*
 spider
 test_file
-test_net
+test_neit
+
+# Not ignore
+!empty #this for track directories
