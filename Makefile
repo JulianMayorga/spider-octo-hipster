@@ -2,6 +2,7 @@ CC = gcc
 CFLAGS = -Wall -pthread -g -ggdb
 NOMBRE = spider
 TARGETS = spider test_file test_net
+LDLIBS = -lrt
 
 all: $(TARGETS)
 

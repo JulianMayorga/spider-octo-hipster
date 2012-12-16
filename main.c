@@ -4,6 +4,9 @@
 #include <string.h>
 #include <limits.h>
 #include <pthread.h>
+#include <mqueue.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "net.h"
 #include "list.h"
@@ -40,7 +43,9 @@ void crawl(struct url_list *url_list) {
     //store host and url in local variables
     host = strcpy(host, tmp_ptr->host);
     url = strcpy(url, tmp_ptr->url);
-    monitor_send(url_list->msqid, host, url);
+   	
+	 // send message to monitor
+	 monitor_send(host);
     
     //free current node of the list
     list_del(&tmp_ptr->list);
@@ -63,15 +68,10 @@ void crawl(struct url_list *url_list) {
 
 int main(int argc, char **argv) {
 
-  int msqid = monitor_create();
-
-  if ( -1 == msqid ) {
-    perror("monitor_create");
-  }
   
   if (!fork()) {
     //child
-    if( -1 == monitor_receive(msqid) ) {
+   if( -1 == monitor_receive()) {
       perror("monitor_receive");
       exit(1);
     }
@@ -93,8 +93,6 @@ int main(int argc, char **argv) {
 
     url_list.mutex = &work_mutex;
 
-    url_list.msqid = msqid;
-	
 	if (strcmp(filename, "") == 0) {
 		snprintf(filename, sizeof(filename), "url_frontier"); // Set default
 	}	
@@ -123,8 +121,12 @@ int main(int argc, char **argv) {
         perror("pthread_join");
       }
     }
+	
+	// Wait for child to terminate
+	wait(NULL);
+	//monitor_destroy(); 
   }
-  
+ 
 
   return 0;
 }

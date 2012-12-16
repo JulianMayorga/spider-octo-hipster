@@ -14,9 +14,9 @@
 #define _MONITOR_
 
 struct crawling_info {
-  long mtype;
+  mqd_t mqd;
   char host[256];
-  char url[512];
+  //char url[512];
 };
 
 /* FUNCTIONS */
@@ -24,22 +24,22 @@ struct crawling_info {
 /*
  * @brief   Monitor crawling message receiving
  *
- * @param   key is the queue identifier
  * @return  0 on success,
  *         -1 on error
  */
-int monitor_receive(key_t key);
+//int monitor_receive(key_t key);
+int monitor_receive();
 
 /*
  * @brief   Monitor crawling message sending
  *
- * @param   msqid is the queue identifier
  * @param   host
- * @param   url
  * @return  0 on success,
  *         -1 on error
  */
-int monitor_send(int msqid, char* host, char* url);
+//int monitor_send(int msqid, char* host, char* url);
+
+int monitor_send(char *host);
 
 /*
  * @brief   Create monitor
@@ -51,10 +51,9 @@ int monitor_create();
 /*
  * @brief   Destroy monitor
  *
- * @param   msqid is the queue identifier
  * @return  0 on success,
  *         -1 on error
  */
-int monitor_destroy(int msqid);
-
+//int monitor_destroy(int msqid);
+int monitor_destroy();
 #endif

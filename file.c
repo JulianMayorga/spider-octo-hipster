@@ -44,13 +44,15 @@ int file_save(char* buffer, char* dir, char* filename) {
   fd = open(fullpath, O_WRONLY | O_CREAT | O_TRUNC, mode);
   if ( -1 == fd ) {
     perror("open");
+	exit(EXIT_FAILURE);
   }
 
   //write
   if ( -1 == write(fd, buffer, strlen(buffer)) ) {
     //hacky, but it is a way to return -1 on error
     fd = -1;
-    perror("write");
+    perror("write");	
+	exit(EXIT_FAILURE);
   }
 
   return fd;
@@ -64,6 +66,7 @@ char* file_to_buffer(const char* filename) {
   if (0 > (fd = open(filename, O_RDONLY))) {
     perror("open");
     buffer = NULL;
+	exit(EXIT_FAILURE);
   } else {
     fstat(fd, &file_info);
     //read whole file - EOF

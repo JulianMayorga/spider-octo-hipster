@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <mqueue.h>
 
 #include "file.h"
 #include "list.h"

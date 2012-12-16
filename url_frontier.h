@@ -16,7 +16,7 @@
 struct url_list {
   char* host;
   char* url;
-  int msqid;
+  mqd_t*  mqd;
   struct list_head list;
   pthread_mutex_t* mutex;
 };
