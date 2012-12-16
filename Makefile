@@ -16,5 +16,6 @@ test_net: test_net.o net.o
 	$(CC) $(CFLAGS) $(STANDARD) -o $@ $^ $(LDLIBS)
 
 clean:
-	rm -fvrf $(TARGETS) *.o *~ sites/*
+	rm -fvrf $(TARGETS) *.o *~
+	rm -rf sites/www*
 
